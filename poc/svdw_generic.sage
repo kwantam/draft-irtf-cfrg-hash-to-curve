@@ -10,6 +10,8 @@ except ImportError:
     sys.exit("Error loading preprocessed sage files. Try running `make clean pyfiles`")
 
 class GenericSvdW(GenericMap):
+    cov_targs = ['gx1', 'gx2', 'gx3']
+
     def __init__(self, F, A, B):
         self.name = "SVDW"
         self.F = F
@@ -36,6 +38,9 @@ class GenericSvdW(GenericMap):
             if zz.is_square():
                 sqrt_zz = zz.sqrt()
                 self.undefs += [sqrt_zz, -sqrt_zz]
+
+        # coverage
+        self.coverage = {}
 
     def straight_line(self, u):
         u = self.F(u)
@@ -110,12 +115,15 @@ class GenericSvdW(GenericMap):
         x2 = -Z / 2 + tv5
         x3 = Z - 4 * g(Z) * (tv2^2 * tv3)^2 / (3 * Z^2 + 4 * A)
         if is_square(g(x1)):
+            self.coverage['gx1'] = self.coverage.get('gx1', 0) + 1
             x = x1
             y = sqrt(g(x1))
         elif is_square(g(x2)):
+            self.coverage['gx2'] = self.coverage.get('gx2', 0) + 1
             x = x2
             y = sqrt(g(x2))
         else:
+            self.coverage['gx3'] = self.coverage.get('gx3', 0) + 1
             x = x3
             y = sqrt(g(x3))
         if sgn0(u) != sgn0(y):

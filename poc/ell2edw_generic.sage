@@ -36,6 +36,10 @@ class GenericEll2Edw(GenericMap):
             ttest = t2test.sqrt()
             self.undefs += [(stest, ttest), (stest, -ttest)]
 
+        # coverage: track in underlying GenericEll2
+        self.coverage = self.ell2_map.coverage
+        self.cov_targs = self.ell2_map.cov_targs
+
     def not_straight_line(self, u):
         (s, t) = self.ell2_map.not_straight_line(u)
         return self.nsl_map(s, t)

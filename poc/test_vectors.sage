@@ -140,10 +140,13 @@ def create_expander_files(expander):
     expander_to_ascii_file(expander)
     expander_to_json_file(expander)
 
+def good_coverage(suite):
+    vectors = [ suite(msg, output_test_vector=True) for msg in INPUTS ]
+    return all( targ in suite.m2c.coverage for targ in suite.m2c.cov_targs )
 
 EXPAND_LENGTHS = [32, 128]
 
-INPUTS = ["", "abc", "abcdef0123456789", "a512_" + "a"*512]
+INPUTS = ["", "abc", "abcdef0123456789", "q128_" + "q"*128, "a512_" + "a"*512]
 
 ALL_SUITES = [
     p256_sswu_ro, p384_sswu_ro, p521_sswu_ro, secp256k1_sswu_ro,

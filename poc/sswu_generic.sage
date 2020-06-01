@@ -10,6 +10,8 @@ except ImportError:
     sys.exit("Error loading preprocessed sage files. Try running `make clean pyfiles`")
 
 class GenericSSWU(GenericMap):
+    cov_targs = ['gx1', 'gx2']
+
     def __init__(self, F, A, B):
         self.name = "SSWU"
         self.F = F
@@ -34,6 +36,9 @@ class GenericSSWU(GenericMap):
             ex = self.c2.sqrt()
             self.undefs += [ex, -ex]
 
+        # coverage
+        self.coverage = {}
+
     def not_straight_line(self, u):
         inv0 = self.inv0
         is_square = self.is_square
@@ -52,9 +57,11 @@ class GenericSSWU(GenericMap):
         x2 = Z * u^2 * x1
         gx2 = x2^3 + A * x2 + B
         if is_square(gx1):
+            self.coverage['gx1'] = self.coverage.get('gx1', 0) + 1
             x = x1
             y = sqrt(gx1)
         else:
+            self.coverage['gx2'] = self.coverage.get('gx2', 0) + 1
             x = x2
             y = sqrt(gx2)
         if sgn0(u) != sgn0(y):

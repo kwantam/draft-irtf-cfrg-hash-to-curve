@@ -10,6 +10,8 @@ except ImportError:
     sys.exit("Error loading preprocessed sage files. Try running `make clean pyfiles`")
 
 class GenericEll2(GenericMap):
+    cov_targs = ['gx1', 'gx2']
+
     def __init__(self, F, J, K):
         self.name = "ELL2"
         self.F = F
@@ -33,6 +35,9 @@ class GenericEll2(GenericMap):
             ex = sqrt(F(-1) / self.Z)
             self.undefs += [ex, -ex]
 
+        # coverage: track in non-straight-line
+        self.coverage = {}
+
     def to_weierstrass(self, s, t):
         x = s / self.K
         y = t / self.K
@@ -55,12 +60,14 @@ class GenericEll2(GenericMap):
         x2 = -x1 - (J / K)
         gx2 = x2^3 + (J / K) * x2^2 + x2 / K^2
         if is_square(gx1):
+            self.coverage['gx1'] = self.coverage.get('gx1', 0) + 1
             x = x1
             y = sqrt(gx1)
             if sgn0(y) == 0:
                 y = -y
             assert sgn0(y) == 1
         else:
+            self.coverage['gx2'] = self.coverage.get('gx2', 0) + 1
             x = x2
             y = sqrt(gx2)
             if sgn0(y) == 1:
